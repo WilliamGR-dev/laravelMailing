@@ -36,7 +36,7 @@
     </div>
 @else
     <div class="container mt-5">
-    <h1 class="text-center mb-5">Bibliothèque Sainte-Geneviève</h1>
+    <h1 class="text-center mb-5">Diteco RDV</h1>
     <h2 class="text-center">Réservation</h2>
     <p class="text-center">Réserver une place pour une heure <em>(2 places par heure disponibles)</em>.</p>
         @if(session('status'))
