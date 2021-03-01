@@ -90,11 +90,11 @@ class ReservationController extends Controller
         $result = DB::select('select * from reservation where token = :token ', ['token' => $token]);
         if ($result){
             $array = json_decode(json_encode($result), true);
-            $date = new Carbon($array[0]['date']);
-            $array[0]['date'] = utf8_encode($date->formatLocalized('%A %d %B %Y à %H:%M'));
+            $newDate = (new Carbon($array[0]['date']))->isoFormat('LLLL');
+
 
             if ($result){
-                return view('annulation')->with('date', $array[0]['date'])->with('token', $array[0]['token']);
+                return view('annulation')->with('date', $newDate)->with('token', $array[0]['token']);
             }
             else{
                 return redirect('/');
