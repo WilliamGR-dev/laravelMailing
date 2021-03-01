@@ -9,7 +9,7 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <script src="{{ asset('js/googleMap.js') }}" rel="script"></script>
     <script async
-            src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_KEY')}}}&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_KEY')}}&callback=initMap">
     </script>
 
 <body>
