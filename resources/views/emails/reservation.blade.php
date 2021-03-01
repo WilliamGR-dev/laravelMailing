@@ -3,7 +3,7 @@
 
 Confirmer votre reservation en cliquant ci-dessous
 
-@component('mail::button', ['url' => 'http://127.0.0.1:8000/reservation/confirm/'.$information['token']])
+@component('mail::button', ['url' => env('APP_URL').'reservation/confirm/'.$information['token']])
 Confirmer ma reservation
 @endcomponent
 
@@ -13,7 +13,7 @@ Confirmer ma reservation
 
 {{ $information['dateReservation'] }}
 
-@component('mail::button', ['url' => 'http://127.0.0.1:8000/reservation/annulation/'.$information['token']])
+@component('mail::button', ['url' => env('APP_URL').'reservation/annulation/'.$information['token']])
     Annuler ma reservation
 @endcomponent
 
