@@ -33,6 +33,7 @@ class ReservationController extends Controller
         $start_reservation = (new Carbon($date))->startOfHour();
         $end_reservation = (new Carbon($date))->addHour()->startOfHour();
         $newDate = utf8_encode(strftime('%A %d %B %Y à %H:%M', strtotime($dateHour)));
+        $newDate = (new Carbon($date))->isoFormat('LLLL');
 
         $results = DB::select('select * from reservation where email = :email AND date = :date', ['email' => $_POST['email'], 'date' => $start_reservation]);
         $count = DB::select('select * from reservation where date = :date', ['date' => $start_reservation]);
@@ -55,19 +56,19 @@ class ReservationController extends Controller
                         return redirect('/reservation')->with('message', $information);
                     }
                     else {
-                        return redirect('/reservation')->with('error', "Cette reservation est en dehors des heures d'ouverture");
+                        return redirect('/reservation')->with('error', "Cette reservation est en dehors des heures d'ouverture")->withInput();
                     }
                 }
                 else{
-                    return redirect('/reservation')->with('error', "Toutes les reservations on etait prise pour cette horraires");
+                    return redirect('/reservation')->with('error', "Toutes les reservations on etait prise pour cette horraires")->withInput();
                 }
             }
             else {
-                return redirect('/reservation')->with('error', "Cette reservation existe deja a votre nom");
+                return redirect('/reservation')->with('error', "Cette reservation existe deja a votre nom")->withInput();
             }
         }
         else {
-            return redirect('/reservation')->with('error', "Cette reservation n'est plus disponible");
+            return redirect('/reservation')->with('error', "Cette reservation n'est plus disponible")->withInput();
         }
 
     }
