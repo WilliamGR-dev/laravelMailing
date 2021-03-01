@@ -102,9 +102,6 @@ class ReservationController extends Controller
         else{
             return redirect('/reservation')->with('error', 'La réservation n\'existe pas (ou plus car a déjà été annulée)');
         }
-
-
-
     }
 
     public function deletReservation($token) {
@@ -114,10 +111,9 @@ class ReservationController extends Controller
         $result = DB::select('select * from reservation where token = :token ', ['token' => $token]);
         $array = json_decode(json_encode($result), true);
         $information = $array[0];
-        $email = $information['email'];
         $delete = DB::delete('delete from reservation where token = :token ', ['token' => $token]);
         if ($delete){
-            Mail::to($email)->send(new Cancel($information));
+            Mail::to($result[0]->email)->send(new Cancel($information));
             return redirect('/reservation')->with('status', 'Votre réservation a bien été annulée.');
         }
         else{
