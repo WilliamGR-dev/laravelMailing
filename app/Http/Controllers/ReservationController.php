@@ -113,7 +113,7 @@ class ReservationController extends Controller
         $information = $array[0];
         $delete = DB::delete('delete from reservation where token = :token ', ['token' => $token]);
         if ($delete){
-            Mail::to($result[0]->email)->send(new Cancel($information));
+            Mail::to(trim($result[0]->email))->send(new Cancel($information));
             return redirect('/reservation')->with('status', 'Votre réservation a bien été annulée.');
         }
         else{

@@ -60,14 +60,14 @@
                         @csrf
                         <input type="hidden" name="_token" value="sKrXKbQKB1tVGipW0S9eFoQasuylbVjmnrTwn1kF">
                         <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="date" name="date" value="" min="2021-02-25" >
+                        <input type="date" class="form-control" id="date" name="date" value="{{ old('date') }}" min="2021-02-25" >
                         @error('date')
                         <div>{{ $message }}</div>
                         @enderror
 
                         <div class="my-3">
                             <label for="hour" class="form-label">Heure</label>
-                            <input type="time" id="hour" class="form-control" name="hour" min="09:00" max="18:00" step="3600" >
+                            <input type="time" id="hour" class="form-control" name="hour" min="09:00" value="{{ old('hour') }}" max="18:00" step="3600" >
                             @error('hour')
                             <div>{{ $message }}</div>
                             @enderror
@@ -75,7 +75,7 @@
 
                         <div class="my-3">
                             <label for="email" class="form-label">Votre adresse e-mail</label>
-                            <input class="form-control" id="email" name="email" placeholder="elon.musk@tesla.com" value="" >
+                            <input class="form-control" id="email" name="email" placeholder="elon.musk@tesla.com" value="{{ old('email') }}" >
                             @error('email')
                                 <div>{{ $message }}</div>
                             @enderror
