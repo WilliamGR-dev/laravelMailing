@@ -76,7 +76,7 @@
 
     <h2 class="my-5">Informations pratiques</h2>
 
-    <div id="map"></div>
+    <div id="map" style="height: 400px;width: 100%;"></div>
 
 </div>
 
