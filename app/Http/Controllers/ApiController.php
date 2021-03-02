@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use App\Mail\Cancel;
 use App\Mail\Reservation;
 use Illuminate\Http\Request;
-use DB;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
-class ReservationController extends Controller
+class ApiController extends Controller
 {
-    //
-    public function create(){
+
+    public function infos(){
+        $infos = Config::get('information');
+        return $infos;
+    }
+
+    public function create(){;
         $information = Config::get('information');
 
         setlocale(LC_TIME, 'fra', 'fr_FR');
@@ -32,7 +37,6 @@ class ReservationController extends Controller
         $today = Carbon::now()->addHour();
         $start_reservation = (new Carbon($date))->startOfHour();
         $end_reservation = (new Carbon($date))->addHour()->startOfHour();
-        $newDate = utf8_encode(strftime('%A %d %B %Y à %H:%M', strtotime($dateHour)));
         $newDate = (new Carbon($date))->isoFormat('LLLL');
 
         $results = DB::select('select * from reservation where email = :email AND date = :date', ['email' => $_POST['email'], 'date' => $start_reservation]);
@@ -51,61 +55,27 @@ class ReservationController extends Controller
                         DB::insert('insert into reservation (email, date, token) values (?, ?, ?)', [$_POST['email'], $start_reservation,$token]);
 
 
-
-
-                        return redirect('/reservation')->with('message', $information);
+                        return response()->json(['message' => "Votre réservation à l'établissement Diteco le ".$newDate." a bien été confirmée ! Vous recevrez un mail de confirmation", 'token' => $token], 201);
                     }
                     else {
-                        return redirect('/reservation')->with('error', "Cette reservation est en dehors des heures d'ouverture")->withInput();
+                        return response()->json("Cette reservation est en dehors des heures d'ouverture", 400);
                     }
                 }
                 else{
-                    return redirect('/reservation')->with('error', "Toutes les reservations on etait prise pour cette horraires")->withInput();
+                    return response()->json("Toutes les reservations on etait prise pour cette horraires", 400);
                 }
             }
             else {
-                return redirect('/reservation')->with('error', "Cette reservation existe deja a votre nom")->withInput();
+                return response()->json("Cette reservation existe deja a votre nom", 400);
             }
         }
         else {
-            return redirect('/reservation')->with('error', "Cette reservation n'est plus disponible")->withInput();
+            return response()->json("Cette reservation n'est plus disponible", 400);
         }
 
     }
 
-    public function confirmReservation($token) {
-        $result = DB::select('select * from reservation where token = :token ', ['token' => $token]);
-        if ($result){
-            $confirm = DB::update('update reservation set confirm = ?  where token = ?', [1 , $token]);
-            return redirect('/reservation')->with('status', "Cette reservation a etait confirmer");
-        }
-        else{
-            return redirect('/reservation')->with('error', "Cette reservation n'existe pas");
-        }
-    }
-
-    public function annulationVerification($token) {
-
-        setlocale(LC_TIME, 'fra', 'fr_FR');
-        $result = DB::select('select * from reservation where token = :token ', ['token' => $token]);
-        if ($result){
-            $array = json_decode(json_encode($result), true);
-            $newDate = (new Carbon($array[0]['date']))->isoFormat('LLLL');
-
-
-            if ($result){
-                return view('annulation')->with('date', $newDate)->with('token', $array[0]['token']);
-            }
-            else{
-                return redirect('/');
-            }
-        }
-        else{
-            return redirect('/reservation')->with('error', 'La réservation n\'existe pas (ou plus car a déjà été annulée)');
-        }
-    }
-
-    public function deletReservation($token) {
+    public function delete($token) {
         request()->validate([
             'validate' => 'required|accepted',
         ]);
@@ -116,14 +86,14 @@ class ReservationController extends Controller
             $delete = DB::delete('delete from reservation where token = :token ', ['token' => $token]);
             if ($delete){
                 Mail::to(trim($result[0]->email))->send(new Cancel($information));
-                return redirect('/reservation')->with('status', 'Votre réservation a bien été annulée.');
+                return response()->json(["Votre réservation a bien été annulée."], 200);
             }
             else{
-                return redirect('/reservation')->with('error', 'La réservation n\'existe pas (ou plus car a déjà été annulée)');
+                return response()->json("La réservation n'existe pas (ou plus car a déjà été annulée)", 400);
             }
         }
-        else {
-            return redirect('/reservation')->with('error', 'La réservation n\'existe pas (ou plus car a déjà été annulée)');
+        else{
+            return response()->json("La réservation n'existe pas (ou plus car a déjà été annulée)", 400);
         }
 
 

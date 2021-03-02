@@ -21,7 +21,7 @@
                     <div class="card-body">
                         <h1 class="card-title text-center mb-4">Réservation confirmée ✌️</h1>
 
-                        <p class="card-text text-center">Votre réservation à l'établissement Bibliothèque Sainte-Geneviève le <?= session('message')['dateReservation'] ?> a bien été confirmée !</p>
+                        <p class="card-text text-center">Votre réservation à l'établissement Diteco le <?= session('message')['dateReservation'] ?> a bien été confirmée !</p>
 
                         <p class="card-text text-center">Vous pouvez à tout moment annuler votre venue en utilisant le lien présent dans l'email que nous venons de vous envoyer.</p>
 
